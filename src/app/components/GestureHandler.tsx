@@ -2,26 +2,26 @@ import {GestureDetector, GestureHandlerRootView, Gesture} from 'react-native-ges
 import Animated , {useSharedValue}from 'react-native-reanimated'
 import {Canvas} from '@react-three/fiber'
 import { Suspense } from 'react';
-import Shoe from './Model';
+import Model from './Model';
 
 
-export default function GestureHandler(children){
+export default function GestureHandler(){
 	const isPressed = useSharedValue(false);
 	const offset = useSharedValue({ x: 0, y: 0 });
 
-	const start = useSharedValue({ x: 0, y: 0 });
-	const gesture = Gesture.Pan()
+	const startPan = useSharedValue({ x: 0, y: 0 });
+	const panGesture = Gesture.Pan()
 	  .onBegin(() => {
 		isPressed.value = true;
 	  })
 	  .onUpdate((e) => {
 		offset.value = {
-		  x: e.translationX + start.value.x,
-		  y: e.translationY + start.value.y,
+		  x: e.translationX + startPan.value.x,
+		  y: e.translationY + startPan.value.y,
 		};
 	  })
 	  .onEnd(() => {
-		start.value = {
+		startPan.value = {
 		  x: offset.value.x,
 		  y: offset.value.y,
 		};
@@ -30,16 +30,37 @@ export default function GestureHandler(children){
 		isPressed.value = false;
 	  });
 
+	const zoom = useSharedValue(10);
+	const startZoom = useSharedValue(0);
+
+	const pintchGesture = Gesture.Pinch()
+	  .onBegin(() => {
+		isPressed.value = true;
+	  })
+	  .onStart((e)=> {
+		zoom.value = startZoom.value;
+	  })
+	  .onUpdate((e) => {
+		zoom.value = e.scale * 10;
+	  })
+	  .onEnd(() => {
+		startZoom.value = zoom.value
+	  })
+	  .onFinalize(() => {
+		isPressed.value = false;
+	  });
+
+	  const composed = Gesture.Simultaneous(panGesture, pintchGesture)
 
   return (
 	<GestureHandlerRootView style={{ flex: 1 }}>
-		<GestureDetector gesture={gesture}>
+		<GestureDetector gesture={composed}>
 			<Animated.View style={{ flex: 1 }}>
 			<Canvas>
 				<ambientLight/>
 				<pointLight position={[10,10,10]}/>
 				<Suspense fallback={null}>
-					<Shoe offset={offset}/>
+					<Model offset={offset} zoom={zoom}/>
 				</Suspense>
 			</Canvas>
 			</Animated.View>

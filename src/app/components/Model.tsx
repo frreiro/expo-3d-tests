@@ -8,7 +8,7 @@ import { THREE, TextureLoader } from 'expo-three';
 import { Mesh } from 'three';
 
 
-export default function Shoe(props) {
+export default function Model(props) {
 
 
 	const meshRef = useRef<Mesh>();
@@ -45,11 +45,12 @@ export default function Shoe(props) {
 
 		meshRef.current.rotation.x = y;
 		meshRef.current.rotation.y = x;
+		meshRef.current.scale.setScalar(props.zoom.value)
 	})
 
 	return (
 	<mesh ref={meshRef} rotation={[0.5,0,0]}>
-		<primitive object={obj} scale={10}/>
+		<primitive object={obj}/>
 	</mesh>) 
   }
 
