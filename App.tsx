@@ -1,11 +1,11 @@
 import React from "react";
 import { View } from "react-native";
-import Scene from "./src/app/components/Scene";
+import GestureHandler from "./src/app/components/GestureHandler";
 
 export default function App() {
   return (
 	<View style={{flex: 1}}>
-		<Scene/>
+			<GestureHandler/>
 	</View>
   );
 }

@@ -1,9 +1,11 @@
-import React from 'react';
 import {GestureDetector, GestureHandlerRootView, Gesture} from 'react-native-gesture-handler'
 import Animated , {useSharedValue}from 'react-native-reanimated'
+import {Canvas} from '@react-three/fiber'
+import { Suspense } from 'react';
+import Shoe from './Model';
 
 
-export default function GestureHandler({children}){
+export default function GestureHandler(children){
 	const isPressed = useSharedValue(false);
 	const offset = useSharedValue({ x: 0, y: 0 });
 
@@ -33,7 +35,13 @@ export default function GestureHandler({children}){
 	<GestureHandlerRootView style={{ flex: 1 }}>
 		<GestureDetector gesture={gesture}>
 			<Animated.View style={{ flex: 1 }}>
-			{children}
+			<Canvas>
+				<ambientLight/>
+				<pointLight position={[10,10,10]}/>
+				<Suspense fallback={null}>
+					<Shoe offset={offset}/>
+				</Suspense>
+			</Canvas>
 			</Animated.View>
 		</GestureDetector>
 	</GestureHandlerRootView>
