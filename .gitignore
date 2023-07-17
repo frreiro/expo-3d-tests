@@ -10,6 +10,9 @@ npm-debug.*
 *.orig.*
 web-build/
 
+#temporary
+assets
+
 # macOS
 .DS_Store
 
